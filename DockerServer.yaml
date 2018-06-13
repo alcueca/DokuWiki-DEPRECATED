@@ -88,3 +88,13 @@ Resources:
             /opt/aws/bin/cfn-hup
             # All done so signal success
             /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackId} --resource EC2Instance --region=${AWS::Region}
+  Route53RecordSet:
+  # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html
+    Type: 'AWS::Route53::RecordSet'    
+    Properties:
+      Name: wiki.albertocuesta.click.
+      HostedZoneName: albertocuesta.click.
+      Type: A
+      TTL: 300
+      ResourceRecords: 
+        - !GetAtt EC2Instance.PublicIp
