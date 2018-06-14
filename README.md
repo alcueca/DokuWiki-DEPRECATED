@@ -1,5 +1,9 @@
 CloudFormation Stacks to deploy a DokuWiki container in AWS. Lots still to do in terms of tightening security, dns routing and backup/restore.
 
+On running the stack, it will do a fresh dokuwiki container install and restore the wiki content from S3.
+
+Currently it also creates a route53 recordset pointing wiki.albertocuesta.click to the dokuwiki server ip, but somehow it doesn't work yet.
+
 === Fresh install ===
 
 docker pull bitnami/dokuwiki
