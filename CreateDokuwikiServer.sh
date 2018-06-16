@@ -2,7 +2,7 @@
 
 PATH=$PATH:/home/alberto/AWS/Git/AWS-Tooling/
 
-aws cloudformation create-stack --profile alberto --stack-name DokuwikiStack \
+aws cloudformation create-stack --profile alberto --stack-name DokuwikiServerStack \
         --template-body file://DokuwikiServer.yaml \
         --region eu-west-1 \
         --parameters \
@@ -10,4 +10,4 @@ aws cloudformation create-stack --profile alberto --stack-name DokuwikiStack \
             ParameterKey=InstanceTypeParam,ParameterValue=t2.micro \
         --disable-rollback
 
-waitForStatus.py -s DokuwikiStack -r CREATE_COMPLETE
+waitForStatus.py -s DokuwikiServerStack -r CREATE_COMPLETE

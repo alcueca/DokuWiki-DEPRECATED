@@ -97,8 +97,10 @@ Resources:
             aws s3 cp s3://techhq-dokuwiki/dokuwiki-persistence-backup.tar.gz .
             sudo tar xpzf dokuwiki-persistence-backup.tar.gz
             rm -f dokuwiki-persistence-backup.tar.gz
-            # Create and run the dokuwiki container            
+            # Create and run the dokuwiki container
+            echo "Dokuwiki docker network tier:"
             docker network create dokuwiki-tier
+            echo "Dokuwiki docker container:"
             docker run -d -p 80:80 -p 443:443 --name dokuwiki \
                 --net dokuwiki-tier \
                 --volume /home/ec2-user/dokuwiki-persistence:/bitnami \
