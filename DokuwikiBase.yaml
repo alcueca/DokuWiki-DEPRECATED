@@ -4,76 +4,45 @@ Description: 'This template creates some basic infrastructure with which to buil
 Outputs:
 
   # --- Networks ---
-  EC2VPCOut:
-    Description: A VPC for the resources built on top of this stack.
-    Value: !Ref EC2VPC
-    Export:
-      Name: EC2VPCOut
-
-  EC2Subnet1Out:
+  DokuwikiEC2Subnet1Out:
     Description: A subnet in the eu-west-1a region and zone.
     Value: !Ref EC2Subnet1
     Export:
-      Name: EC2Subnet1Out
+      Name: DokuwikiEC2Subnet1Out
 
-  EC2Subnet2Out:
+  DokuwikiEC2Subnet2Out:
     Description: A subnet in the eu-west-1b region and zone.
     Value: !Ref EC2Subnet2
     Export:
-      Name: EC2Subnet2Out
+      Name: DokuwikiEC2Subnet2Out
 
   # --- Security Groups ---
-
-  EC2SecurityGroupSSHOut:
-    Description: This Security Group allows SSH traffic on port 22.
-    Value: !Ref EC2SecurityGroupSSH
-    Export:
-      Name: EC2SecurityGroupSSHOut
-
   # EC2 Instances require the Security Group Id instead of the Security Group Resource
-  EC2SecurityGroupSSHGroupIdOut:
+  DokuwikiEC2SecurityGroupSSHGroupIdOut:
     Description: This Security Group allows SSH traffic on port 22.
     Value:
       Fn::GetAtt:
         - EC2SecurityGroupSSH
         - GroupId
     Export:
-      Name: EC2SecurityGroupSSHGroupIdOut
-
-  EC2SecurityGroupHTTPOut:
-    Description: This Security Group allows HTTP traffic on port 80.
-    Value: !Ref EC2SecurityGroupHTTP
-    Export:
-      Name: EC2SecurityGroupHTTPOut
+      Name: DokuwikiEC2SecurityGroupSSHGroupIdOut
 
   # EC2 Instances require the Security Group Id instead of the Security Group Resource
-  EC2SecurityGroupHTTPGroupIdOut:
+  DokuwikiEC2SecurityGroupHTTPGroupIdOut:
     Description: This Security Group allows HTTP traffic on port 80.
     Value:
       Fn::GetAtt:
         - EC2SecurityGroupHTTP
         - GroupId
     Export:
-      Name: EC2SecurityGroupHTTPGroupIdOut
+      Name: DokuwikiEC2SecurityGroupHTTPGroupIdOut
 
   # --- IAM ---
-  IAMInstanceProfileECRFullAccessOut:
-    Description: This profile allows all actions on all ECR resources
-    Value: !Ref IAMInstanceProfileECRFullAccess
-    Export:
-      Name: IAMInstanceProfileECRFullAccessOut
-
-  IAMInstanceProfileECSFullAccessOut:
-    Description: This profile allows all actions on all ECS resources
-    Value: !Ref IAMInstanceProfileECSFullAccess
-    Export:
-      Name: IAMInstanceProfileECSFullAccessOut
-
   IAMInstanceProfileS3FullAccessOut:
     Description: This profile allows all actions on the techhq-dokuwiki S3 bucket.
     Value: !Ref IAMInstanceProfileS3FullAccess
     Export:
-      Name: IAMInstanceProfileS3FullAccessOut
+      Name: DokuwikiIAMInstanceProfileS3FullAccessOut
 
 Resources:
 
@@ -162,36 +131,6 @@ Resources:
           CidrIp: 0.0.0.0/0
 
   # --- IAM ---
-  # https://docs.aws.amazon.com/AmazonECR/latest/userguide/ECR_IAM_policies.html
-  # Roles and profiles giving full access to ECS also have full access to ECR in this config
-  # This role gives EC2 instances full access to ECR
-  IAMRoleECRFullAccess:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - ec2.amazonaws.com
-          Action:
-          - sts:AssumeRole
-      Path: "/"
-
-  # This role gives EC2 instances full access to ECS and ECR
-  IAMRoleECSFullAccess:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - ec2.amazonaws.com
-          Action:
-          - sts:AssumeRole
-      Path: "/"
-
   # This role gives EC2 instances full access to S3 buckets
   IAMRoleS3FullAccess:
     Type: AWS::IAM::Role
@@ -205,35 +144,6 @@ Resources:
           Action:
           - sts:AssumeRole
       Path: "/"
-
-  # This policy allows all actions on all ECR resources
-  IAMPolicyECRFullAccess:
-    Type: AWS::IAM::Policy
-    Properties:
-      PolicyName: ECRFullAccess
-      PolicyDocument:
-        Statement:
-        - Action:
-          - "ecr:*"
-          Effect: Allow
-          Resource: "*"
-      Roles:
-      - !Ref IAMRoleECRFullAccess
-      - !Ref IAMRoleECSFullAccess
-
-  # This policy allows all actions on all ECS resources
-  IAMPolicyECSFullAccess:
-    Type: AWS::IAM::Policy
-    Properties:
-      PolicyName: ECSFullAccess
-      PolicyDocument:
-        Statement:
-        - Action:
-          - "ecs:*"
-          Effect: Allow
-          Resource: "*"
-      Roles:
-      - !Ref IAMRoleECSFullAccess
 
   # This policy allows all actions on the techhq-dokuwiki bucket
   IAMPolicyS3FullAccess:
@@ -253,22 +163,6 @@ Resources:
           Resource: "arn:aws:s3:::techhq-dokuwiki"
       Roles:
       - !Ref IAMRoleS3FullAccess
-
-  # This profile allows all actions on all ECR resources
-  IAMInstanceProfileECRFullAccess:
-    Type: "AWS::IAM::InstanceProfile"
-    Properties:
-      Path: "/"
-      Roles:
-        - !Ref IAMRoleECRFullAccess
-
-  # This profile allows all actions on all ECS and ECR resources
-  IAMInstanceProfileECSFullAccess:
-    Type: "AWS::IAM::InstanceProfile"
-    Properties:
-      Path: "/"
-      Roles:
-        - !Ref IAMRoleECSFullAccess
 
   # This profile allows all actions on the techhq-dokuwiki S3 bucket
   IAMInstanceProfileS3FullAccess:

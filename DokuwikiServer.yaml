@@ -65,14 +65,14 @@ Resources:
       ResourceSignal:
         Timeout: PT5M
     Properties: 
-      IamInstanceProfile: !ImportValue IAMInstanceProfileS3FullAccessOut
+      IamInstanceProfile: !ImportValue DokuwikiIAMInstanceProfileS3FullAccessOut
       ImageId: !FindInMap [ AMIs, !Ref 'AWS::Region', Name]
       InstanceType: !Ref InstanceTypeParam
       KeyName: !Ref KeyNameParam
       SecurityGroupIds: 
-        - !ImportValue EC2SecurityGroupSSHGroupIdOut
-        - !ImportValue EC2SecurityGroupHTTPGroupIdOut
-      SubnetId: !ImportValue EC2Subnet1Out
+        - !ImportValue DokuwikiEC2SecurityGroupSSHGroupIdOut
+        - !ImportValue DokuwikiEC2SecurityGroupHTTPGroupIdOut
+      SubnetId: !ImportValue DokuwikiEC2Subnet1Out
       Tags:
         - Key: Name
           Value: DokuWiki Server
