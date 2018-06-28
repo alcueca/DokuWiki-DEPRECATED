@@ -105,15 +105,19 @@ Resources:
                 --net dokuwiki-tier \
                 --volume /home/ec2-user/dokuwiki-persistence:/bitnami \
                 bitnami/dokuwiki:latest
+            # Enable restarting the wiki container with the machine
+            aws s3 cp s3://techhq-dokuwiki/start-wiki.sh .
+            chmod +x start-wiki.sh
+            echo "sh /home/ec2-user/start-wiki.sh" >> /etc/rc.d/rc.local
             # All done so signal success
             /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackId} --resource EC2Instance --region=${AWS::Region}
-  Route53RecordSet:
+#  Route53RecordSet:
   # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html
-    Type: 'AWS::Route53::RecordSet'    
-    Properties:
-      Name: wiki.albertocuesta.click.
-      HostedZoneName: albertocuesta.click.
-      Type: A
-      TTL: 300
-      ResourceRecords: 
-        - !GetAtt EC2Instance.PublicIp
+#    Type: 'AWS::Route53::RecordSet'    
+#    Properties:
+#      Name: wiki.albertocuesta.click.
+#      HostedZoneName: albertocuesta.click.
+#      Type: A
+#      TTL: 300
+#      ResourceRecords: 
+#        - !GetAtt EC2Instance.PublicIp
